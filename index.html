@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gen:48 AI Film Competition Strategy Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            text-align: center;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .progress {
+            height: 100%;
+            background-color: #4CAF50;
+            border-radius: 10px;
+            transition: width 0.5s ease-in-out;
+        }
+        .card {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: left;
+            white-space: pre-wrap;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gen:48 AI Film Competition Strategy Game</h1>
+    <div class="progress-bar">
+        <div id="progress" class="progress" style="width: 0%;"></div>
+    </div>
+    <div id="game-container" class="card"></div>
+
+    <script>
+const scenarios = {
+  "00:00": {
+    scenario: "Initial Setup",
+    description: "You've just entered the Gen:48 competition. The clock starts ticking. What's your first step?",
+    choices: {
+      owl: {
+        description: "Analyze the AI tools available and create a detailed plan.",
+        traits: { analytical: 2, precise: 2, strategic: 1 }
+      },
+      hawk: {
+        description: "Quickly decide on a bold, innovative concept to stand out from the competition.",
+        traits: { bold: 2, risk_taking: 2, visionary: 1 }
+      },
+      elephant: {
+        description: "Gather the team for a collaborative brainstorming session.",
+        traits: { collaborative: 2, patient: 2, ethical: 1 }
+      },
+      dolphin: {
+        description: "Experiment with various AI tools to see what interesting possibilities emerge.",
+        traits: { innovative: 2, experimental: 2, curious: 1 }
+      },
+      tortoise: {
+        description: "Start with a thorough review of the competition rules and guidelines.",
+        traits: { steady: 2, methodical: 2, persistent: 1 }
+      }
+    }
+  },
+  "04:00": {
+    scenario: "Narrative Approach",
+    description: "You need to decide on the overall narrative approach for your AI-generated film. Which direction do you take?",
+    choices: {
+      owl: {
+        description: "Develop a complex, multi-layered narrative structure.",
+        traits: { analytical: 2, precise: 2, strategic: 1 }
+      },
+      hawk: {
+        description: "Create a visionary, avant-garde narrative that pushes boundaries.",
+        traits: { bold: 2, risk_taking: 2, visionary: 1 }
+      },
+      elephant: {
+        description: "Craft a heartwarming story that resonates with a wide audience.",
+        traits: { collaborative: 2, patient: 2, ethical: 1 }
+      },
+      dolphin: {
+        description: "Blend multiple genres in an innovative, experimental narrative.",
+        traits: { innovative: 2, experimental: 2, curious: 1 }
+      },
+      tortoise: {
+        description: "Build a solid, traditional narrative structure as a foundation.",
+        traits: { steady: 2, methodical: 2, persistent: 1 }
+      }
+    }
+  },
+  "08:00": {
+    scenario: "AI Tool Selection",
+    description: "It's time to choose the primary AI tool for your project. Which approach do you take?",
+    choices: {
+      owl: {
+        description: "Conduct a thorough analysis of each tool's capabilities and limitations.",
+        traits: { analytical: 2, precise: 2, strategic: 1 }
+      },
+      hawk: {
+        description: "Select the most cutting-edge, powerful AI tool available.",
+        traits: { bold: 2, risk_taking: 2, visionary: 1 }
+      },
+      elephant: {
+        description: "Choose a tool that allows for the most collaborative workflow.",
+        traits: { collaborative: 2, patient: 2, ethical: 1 }
+      },
+      dolphin: {
+        description: "Pick a versatile tool that encourages experimentation and creativity.",
+        traits: { innovative: 2, experimental: 2, curious: 1 }
+      },
+      tortoise: {
+        description: "Opt for a reliable, well-documented AI tool with a proven track record.",
+        traits: { steady: 2, methodical: 2, persistent: 1 }
+      }
+    }
+  },
+  "12:00": {
+    scenario: "Character Development",
+    description: "How do you approach creating the main character for your AI-generated film?",
+    choices: {
+      owl: {
+        description: "Develop a detailed character profile based on psychological research.",
+        traits: { analytical: 2, precise: 2, strategic: 1 }
+      },
+      hawk: {
+        description: "Create a unique, never-before-seen character archetype.",
+        traits: { bold: 2, risk_taking: 2, visionary: 1 }
+      },
+      elephant: {
+        description: "Base the character on a composite of team members' experiences.",
+        traits: { collaborative: 2, patient: 2, ethical: 1 }
+      },
+      dolphin: {
+        description: "Let the AI generate multiple characters and pick the most intriguing one.",
+        traits: { innovative: 2, experimental: 2, curious: 1 }
+      },
+      tortoise: {
+        description: "Slowly build the character, layering traits and backstory methodically.",
+        traits: { steady: 2, methodical: 2, persistent: 1 }
+      }
+    }
+  },
+  "16:00": {
+    scenario: "Visual Style",
+    description: "It's time to decide on the visual style of your film. How do you proceed?",
+    choices: {
+      owl: {
+        description: "Research current trends and audience preferences to inform your decision.",
+        traits: { analytical: 2, precise: 2, strategic: 1 }
+      },
+      hawk: {
+        description: "Push for a groundbreaking visual style that hasn't been seen before.",
+        traits: { bold: 2, risk_taking: 2, visionary: 1 }
+      },
+      elephant: {
+        description: "Collaborate with the team to find a style that everyone is excited about.",
+        traits: { collaborative: 2, patient: 2, ethical: 1 }
+      },
+      dolphin: {
+        description: "Experiment with combining different visual styles in unexpected ways.",
+        traits: { innovative: 2, experimental: 2, curious: 1 }
+      },
+      tortoise: {
+        description: "Carefully refine a classic visual style to perfection.",
+        traits: { steady: 2, methodical: 2, persistent: 1 }
+      }
+    }
+  },
+  "20:00": {
+    scenario: "Conflict Resolution",
+    description: "A disagreement arises in the team about the film's direction. How do you handle it?",
+    choices: {
+      owl: {
+        description: "Analyze the pros and cons of each perspective to find the optimal solution.",
+        traits: { analytical: 2, precise: 2, strategic: 1 }
+      },
+      hawk: {
+        description: "Make a quick, decisive call to keep the project moving forward.",
+        traits: { bold: 2, risk_taking: 2, visionary: 1 }
+      },
+      elephant: {
+        description: "Facilitate a team discussion to reach a consensus everyone can support.",
+        traits: { collaborative: 2, patient: 2, ethical: 1 }
+      },
+      dolphin: {
+        description: "Propose a creative compromise that incorporates elements from both sides.",
+        traits: { innovative: 2, experimental: 2, curious: 1 }
+      },
+      tortoise: {
+        description: "Take time to carefully consider all viewpoints before making a decision.",
+        traits: { steady: 2, methodical: 2, persistent: 1 }
+      }
+    }
+  },
+  "24:00": {
+    scenario: "Technical Challenge",
+    description: "You encounter a significant technical hurdle with the AI. How do you approach it?",
+    choices: {
+      owl: {
+        description: "Conduct a systematic analysis of the problem to find the most efficient solution.",
+        traits: { analytical: 2, precise: 2, strategic: 1 }
+      },
+      hawk: {
+        description: "See this as an opportunity to innovate and create a unique workaround.",
+        traits: { bold: 2, risk_taking: 2, visionary: 1 }
+      },
+      elephant: {
+        description: "Reach out to the wider AI community for advice and collaborative problem-solving.",
+        traits: { collaborative: 2, patient: 2, ethical: 1 }
+      },
+      dolphin: {
+        description: "Experiment with unconventional approaches to overcome the challenge.",
+        traits: { innovative: 2, experimental: 2, curious: 1 }
+      },
+      tortoise: {
+        description: "Methodically work through potential solutions, testing each thoroughly.",
+        traits: { steady: 2, methodical: 2, persistent: 1 }
+      }
+    }
+  },
+  "28:00": {
+    scenario: "Feedback Integration",
+    description: "You receive mixed feedback from a test audience. How do you proceed?",
+    choices: {
+      owl: {
+        description: "Analyze the feedback data to identify patterns and prioritize changes.",
+        traits: { analytical: 2, precise: 2, strategic: 1 }
+      },
+      hawk: {
+        description: "Use the criticism as fuel to make the film even more daring and unique.",
+        traits: { bold: 2, risk_taking: 2, visionary: 1 }
+      },
+      elephant: {
+        description: "Engage with the audience to better understand their perspectives and find common ground.",
+        traits: { collaborative: 2, patient: 2, ethical: 1 }
+      },
+      dolphin: {
+        description: "Use the feedback as inspiration for new, creative directions in the film.",
+        traits: { innovative: 2, experimental: 2, curious: 1 }
+      },
+      tortoise: {
+        description: "Carefully consider each piece of feedback and make measured, thoughtful adjustments.",
+        traits: { steady: 2, methodical: 2, persistent: 1 }
+      }
+    }
+  },
+  "32:00": {
+    scenario: "Time Management",
+    description: "You're approaching the halfway point. How do you manage the remaining time?",
+    choices: {
+      owl: {
+        description: "Create a detailed schedule, allocating time based on task priority and complexity.",
+        traits: { analytical: 2, precise: 2, strategic: 1 }
+      },
+      hawk: {
+        description: "Focus all energy on the most impactful elements, willing to take risks with time allocation.",
+        traits: { bold: 2, risk_taking: 2, visionary: 1 }
+      },
+      elephant: {
+        description: "Have a team meeting to ensure everyone's needs and ideas are considered in the timeline.",
+        traits: { collaborative: 2, patient: 2, ethical: 1 }
+      },
+      dolphin: {
+        description: "Keep the schedule flexible to allow for spontaneous creative breakthroughs.",
+        traits: { innovative: 2, experimental: 2, curious: 1 }
+      },
+      tortoise: {
+        description: "Stick to a steady, consistent pace, ensuring each task is completed thoroughly.",
+        traits: { steady: 2, methodical: 2, persistent: 1 }
+      }
+    }
+  },
+  "36:00": {
+    scenario: "Creative Block",
+    description: "The team hits a creative block. How do you overcome it?",
+    choices: {
+      owl: {
+        description: "Break down the creative process into smaller, manageable steps to analyze the blockage.",
+        traits: { analytical: 2, precise: 2, strategic: 1 }
+      },
+      hawk: {
+        description: "Propose a radical change in direction to shock the team out of their comfort zone.",
+        traits: { bold: 2, risk_taking: 2, visionary: 1 }
+      },
+      elephant: {
+        description: "Organize a supportive group activity to rebuild team morale and spark creativity.",
+        traits: { collaborative: 2, patient: 2, ethical: 1 }
+      },
+      dolphin: {
+        description: "Introduce a completely unrelated creative exercise to stimulate new ideas.",
+        traits: { innovative: 2, experimental: 2, curious: 1 }
+      },
+      tortoise: {
+        description: "Encourage the team to revisit and refine earlier ideas with fresh perspective.",
+        traits: { steady: 2, methodical: 2, persistent: 1 }
+      }
+    }
+  },
+  "40:00": {
+    scenario: "Final Stretch",
+    description: "You're in the final stretch. How do you approach these crucial hours?",
+    choices: {
+      owl: {
+        description: "Conduct a thorough review of all elements, identifying and prioritizing final adjustments.",
+        traits: { analytical: 2, precise: 2, strategic: 1 }
+      },
+      hawk: {
+        description: "Push for one last big, bold addition to make the film truly stand out.",
+        traits: { bold: 2, risk_taking: 2, visionary: 1 }
+      },
+      elephant: {
+        description: "Check in with each team member, ensuring everyone's contributions are valued and integrated.",
+        traits: { collaborative: 2, patient: 2, ethical: 1 }
+      },
+      dolphin: {
+        description: "Encourage last-minute experimentation to add unique touches to the film.",
+        traits: { innovative: 2, experimental: 2, curious: 1 }
+      },
+      tortoise: {
+        description: "Focus on methodically polishing and perfecting every detail of the existing work.",
+        traits: { steady: 2, methodical: 2, persistent: 1 }
+      }
+    }
+  },
+  "44:00": {
+    scenario: "Final Tweaks",
+    description: "With minutes left, you consider a last-minute change. What do you do?",
+    choices: {
+      owl: {
+        description: "Conduct a final analytical review to ensure everything is perfect.",
+        traits: { analytical: 2, precise: 2, strategic: 1 }
+      },
+      hawk: {
+        description: "Implement a bold, last-minute twist to make the film unforgettable.",
+        traits: { bold: 2, risk_taking: 2, visionary: 1 }
+      },
+      elephant: {
+        description: "Gather quick feedback from the team on any final adjustments.",
+        traits: { collaborative: 2, patient: 2, ethical: 1 }
+      },
+      dolphin: {
+        description: "Add a creative, experimental element that just came to mind.",
+        traits: { innovative: 2, experimental: 2, curious: 1 }
+      },
+      tortoise: {
+        description: "Focus on polishing and refining the existing elements.",
+        traits: { steady: 2, methodical: 2, persistent: 1 }
+      }
+    }
+  }
+};
+
+        const animalArchetypes = {
+            Owl: {
+                traits: ["analytical", "precise", "strategic"],
+                message: {
+                    coachingTip: "Leverage your analytical skills to foresee potential obstacles in AI integration.",
+                    susceptibility: "Overthinking may lead to missed creative opportunities.",
+                    returnToPeace: "Take time for quiet reflection to process information and recharge.",
+                    warningSign: "Becoming too detached from the team's creative energy.",
+                    bestSelf: "When you balance analysis with openness to creative inspiration."
+                }
+            },
+            Hawk: {
+                traits: ["bold", "risk_taking", "visionary"],
+                message: {
+                    coachingTip: "Channel your visionary ideas into practical, achievable goals within the AI framework.",
+                    susceptibility: "Overlooking important details in pursuit of the big picture.",
+                    returnToPeace: "Engage in high-energy activities to burn off excess tension.",
+                    warningSign: "Pushing the team too hard without considering their limits.",
+                    bestSelf: "When your bold vision inspires and motivates the entire team."
+                }
+            },
+            Elephant: {
+                traits: ["collaborative", "patient", "ethical"],
+                message: {
+                    coachingTip: "Use your strong ethical compass to guide AI implementation responsibly.",
+                    susceptibility: "Being too accommodating, potentially slowing progress.",
+                    returnToPeace: "Spend time in nature or with loved ones to reground yourself.",
+                    warningSign: "Avoiding necessary conflicts to maintain harmony.",
+                    bestSelf: "When you create a supportive environment that brings out the best in everyone."
+                }
+            },
+            Dolphin: {
+                traits: ["innovative", "experimental", "curious"],
+                message: {
+                    coachingTip: "Harness your curiosity to explore cutting-edge AI applications in filmmaking.",
+                    susceptibility: "Getting distracted by too many interesting possibilities.",
+                    returnToPeace: "Engage in playful, creative activities to rejuvenate your spirit.",
+                    warningSign: "Pursuing novelty at the expense of project stability.",
+                    bestSelf: "When your innovative ideas seamlessly blend with practical execution."
+                }
+            },
+            Tortoise: {
+                traits: ["steady", "methodical", "persistent"],
+                message: {
+                    coachingTip: "Apply your methodical approach to ensure thorough testing of AI tools.",
+                    susceptibility: "Resistance to necessary rapid changes in the fast-paced competition.",
+                    returnToPeace: "Practice mindfulness to stay centered amidst the chaos.",
+                    warningSign: "Falling behind due to overly cautious decision-making.",
+                    bestSelf: "When your steady persistence helps the team overcome seemingly insurmountable obstacles."
+                }
+            }
+        };
+
+        let currentHour = "00:00";
+        let choices = {};
+        const hours = Object.keys(scenarios);
+
+        function calculatePersonalityProfile(choices) {
+            const profile = {};
+            Object.values(choices).forEach(choice => {
+                Object.entries(choice.traits).forEach(([trait, value]) => {
+                    profile[trait] = (profile[trait] || 0) + value;
+                });
+            });
+            return profile;
+        }
+
+        function determineAnimalArchetype(profile) {
+            let bestMatch = { animal: null, score: -Infinity };
+            Object.entries(animalArchetypes).forEach(([animal, { traits }]) => {
+                const score = traits.reduce((sum, trait) => sum + (profile[trait] || 0), 0);
+                if (score > bestMatch.score) {
+                    bestMatch = { animal, score };
+                }
+            });
+            return bestMatch.animal;
+        }
+
+        function updateProgress() {
+            const progress = document.getElementById('progress');
+            const percentage = (hours.indexOf(currentHour) / (hours.length - 1)) * 100;
+            progress.style.width = `${percentage}%`;
+        }
+
+        function handleChoice(choiceKey) {
+            choices[currentHour] = scenarios[currentHour].choices[choiceKey];
+            const nextHourIndex = hours.indexOf(currentHour) + 1;
+            if (nextHourIndex < hours.length) {
+                currentHour = hours[nextHourIndex];
+                renderGame();
+            } else {
+                endGame();
+            }
+        }
+
+        function renderGame() {
+            updateProgress();
+            const container = document.getElementById('game-container');
+            const scenario = scenarios[currentHour];
+            container.innerHTML = `
+                <h2>${scenario.scenario}</h2>
+                <p>Hour: ${currentHour}</p>
+                <p>${scenario.description}</p>
+                ${Object.entries(scenario.choices).map(([key, choice]) => `
+                    <button class="btn" onclick="handleChoice('${key}')">${choice.description}</button>
+                `).join('')}
+            `;
+        }
+
+        function endGame() {
+            const profile = calculatePersonalityProfile(choices);
+            const animalArchetype = determineAnimalArchetype(profile);
+            const container = document.getElementById('game-container');
+            container.innerHTML = `
+                <h2>Game Over</h2>
+                <p>Your animal archetype is: <strong>${animalArchetype}</strong></p>
+                <h3>Your Personality Profile:</h3>
+                <ul>
+                    ${Object.entries(profile).map(([trait, value]) => `
+                        <li>${trait}: ${value}</li>
+                    `).join('')}
+                </ul>
+                <h3>Your ${animalArchetype} Insights:</h3>
+                <ul>
+                    <li><strong>Coaching Tip:</strong> ${animalArchetypes[animalArchetype].message.coachingTip}</li>
+                    <li><strong>Susceptibility:</strong> ${animalArchetypes[animalArchetype].message.susceptibility}</li>
+                    <li><strong>Return to Peace:</strong> ${animalArchetypes[animalArchetype].message.returnToPeace}</li>
+                    <li><strong>Warning Sign:</strong> ${animalArchetypes[animalArchetype].message.warningSign}</li>
+                    <li><strong>Best Self:</strong> ${animalArchetypes[animalArchetype].message.bestSelf}</li>
+                </ul>
+                <button class="btn" onclick="restartGame()">Play Again</button>
+            `;
+        }
+
+        function restartGame() {
+            currentHour = "00:00";
+            choices = {};
+            renderGame();
+        }
+
+        // Start the game
+        renderGame();
+    </script>
+</body>
+</html>
