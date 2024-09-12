@@ -7,24 +7,28 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 600px;
+            line-height: 1.6;
+            color: #00008b;
+            max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            line-height: 1.6;
+            background-color: #f0f8ff;
         }
-        h1 {
+        h1, h2 {
             text-align: center;
+        }
+        h3 {
+            text-align: left;
         }
         .progress-bar {
             width: 100%;
-            height: 20px;
             background-color: #e0e0e0;
             border-radius: 10px;
             margin-bottom: 20px;
         }
         .progress {
-            height: 100%;
-            background-color: #4CAF50;
+            height: 20px;
+            background-color: #4169e1;
             border-radius: 10px;
             transition: width 0.5s ease-in-out;
         }
@@ -39,7 +43,7 @@
             width: 100%;
             padding: 10px;
             margin-bottom: 10px;
-            background-color: #4CAF50;
+            background-color: #4169e1;
             color: white;
             border: none;
             border-radius: 5px;
@@ -48,15 +52,69 @@
             white-space: pre-wrap;
         }
         .btn:hover {
-            background-color: #45a049;
+            background-color: #1e90ff;
         }
-        .hidden {
-            display: none;
+        .animal-image {
+            display: block;
+            margin: 20px auto;
+            max-width: 150px;
+            height: auto;
+        }
+        .results-container {
+            text-align: center;
+        }
+        .insights-list {
+            text-align: left;
+            list-style-type: none;
+            padding: 0;
+        }
+        .insights-list li {
+            margin-bottom: 10px;
+        }
+        #personalityChart {
+            margin-top: 20px;
+        }
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .profile-item {
+            margin-bottom: 5px;
+        }
+        .logo-image {
+            display: block;
+            margin: 20px auto;
+            max-width: 150px;
+            height: auto;
+        }
+        .ticking-clock {
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            h1 { font-size: 1.5em; }
+            h2 { font-size: 1.3em; }
+            h3 { font-size: 1.1em; }
+            .animal-image {
+                max-width: 120px;
+            }
         }
     </style>
 </head>
 <body>
     <h1>Gen:48 AI Film Competition Strategy Game</h1>
+    <img src="images/48.png" alt="48 Logo" class="logo-image">
     <div class="progress-bar">
         <div id="progress" class="progress" style="width: 0%;"></div>
     </div>
@@ -378,7 +436,7 @@ const scenarios = {
   }
 };
 
-        const animalArchetypes = {
+const animalArchetypes = {
             Owl: {
                 traits: ["analytical", "precise", "strategic"],
                 message: {
@@ -387,7 +445,8 @@ const scenarios = {
                     returnToPeace: "Take time for quiet reflection to process information and recharge.",
                     warningSign: "Becoming too detached from the team's creative energy.",
                     bestSelf: "When you balance analysis with openness to creative inspiration."
-                }
+                },
+                image: "images/owl.png"
             },
             Hawk: {
                 traits: ["bold", "risk_taking", "visionary"],
@@ -397,7 +456,8 @@ const scenarios = {
                     returnToPeace: "Engage in high-energy activities to burn off excess tension.",
                     warningSign: "Pushing the team too hard without considering their limits.",
                     bestSelf: "When your bold vision inspires and motivates the entire team."
-                }
+                },
+                image: "images/hawk.png"
             },
             Elephant: {
                 traits: ["collaborative", "patient", "ethical"],
@@ -407,7 +467,8 @@ const scenarios = {
                     returnToPeace: "Spend time in nature or with loved ones to reground yourself.",
                     warningSign: "Avoiding necessary conflicts to maintain harmony.",
                     bestSelf: "When you create a supportive environment that brings out the best in everyone."
-                }
+                },
+                image: "images/elephant.png"
             },
             Dolphin: {
                 traits: ["innovative", "experimental", "curious"],
@@ -417,7 +478,8 @@ const scenarios = {
                     returnToPeace: "Engage in playful, creative activities to rejuvenate your spirit.",
                     warningSign: "Pursuing novelty at the expense of project stability.",
                     bestSelf: "When your innovative ideas seamlessly blend with practical execution."
-                }
+                },
+                image: "images/dolphin.png"
             },
             Tortoise: {
                 traits: ["steady", "methodical", "persistent"],
@@ -427,7 +489,8 @@ const scenarios = {
                     returnToPeace: "Practice mindfulness to stay centered amidst the chaos.",
                     warningSign: "Falling behind due to overly cautious decision-making.",
                     bestSelf: "When your steady persistence helps the team overcome seemingly insurmountable obstacles."
-                }
+                },
+                image: "images/tortoise.png"
             }
         };
 
@@ -479,7 +542,7 @@ const scenarios = {
             const scenario = scenarios[currentHour];
             container.innerHTML = `
                 <h2>${scenario.scenario}</h2>
-                <p>Hour: ${currentHour}</p>
+                <p class="ticking-clock">Hour: <span id="current-hour">${currentHour}</span></p>
                 <p>${scenario.description}</p>
                 ${Object.entries(scenario.choices).map(([key, choice]) => `
                     <button class="btn" onclick="handleChoice('${key}')">${choice.description}</button>
@@ -492,24 +555,65 @@ const scenarios = {
             const animalArchetype = determineAnimalArchetype(profile);
             const container = document.getElementById('game-container');
             container.innerHTML = `
-                <h2>Game Over</h2>
-                <p>Your animal archetype is: <strong>${animalArchetype}</strong></p>
-                <h3>Your Personality Profile:</h3>
-                <ul>
-                    ${Object.entries(profile).map(([trait, value]) => `
-                        <li>${trait}: ${value}</li>
-                    `).join('')}
-                </ul>
-                <h3>Your ${animalArchetype} Insights:</h3>
-                <ul>
-                    <li><strong>Coaching Tip:</strong> ${animalArchetypes[animalArchetype].message.coachingTip}</li>
-                    <li><strong>Susceptibility:</strong> ${animalArchetypes[animalArchetype].message.susceptibility}</li>
-                    <li><strong>Return to Peace:</strong> ${animalArchetypes[animalArchetype].message.returnToPeace}</li>
-                    <li><strong>Warning Sign:</strong> ${animalArchetypes[animalArchetype].message.warningSign}</li>
-                    <li><strong>Best Self:</strong> ${animalArchetypes[animalArchetype].message.bestSelf}</li>
-                </ul>
-                <button class="btn" onclick="restartGame()">Play Again</button>
+                <div id="results-container" class="results-container">
+                    <h2>Your Result: ${animalArchetype}</h2>
+                    <img src="${animalArchetypes[animalArchetype].image}" alt="${animalArchetype}" class="animal-image">
+                    <h3>Your ${animalArchetype} Insights:</h3>
+                    <ul class="insights-list">
+                        <li><strong>Coaching Tip:</strong> ${animalArchetypes[animalArchetype].message.coachingTip}</li>
+                        <li><strong>Susceptibility:</strong> ${animalArchetypes[animalArchetype].message.susceptibility}</li>
+                        <li><strong>Return to Peace:</strong> ${animalArchetypes[animalArchetype].message.returnToPeace}</li>
+                        <li><strong>Warning Sign:</strong> ${animalArchetypes[animalArchetype].message.warningSign}</li>
+                        <li><strong>Best Self:</strong> ${animalArchetypes[animalArchetype].message.bestSelf}</li>
+                    </ul>
+                    <h3>Your Personality Profile:</h3>
+                    <div class="profile-grid">
+                        ${Object.entries(profile).map(([trait, value]) => `
+                            <div class="profile-item">
+                                <strong>${trait}:</strong> ${value}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <button class="btn" onclick="saveAsPNG()">Save as PNG</button>
+                    <button class="btn" onclick="restartGame()">Play Again</button>
+                </div>
+                <canvas id="personalityChart"></canvas>
             `;
+            renderPersonalityChart(profile);
+        }
+
+        function renderPersonalityChart(profile) {
+            const ctx = document.getElementById('personalityChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(profile),
+                    datasets: [{
+                        label: 'Trait Score',
+                        data: Object.values(profile),
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function saveAsPNG() {
+            html2canvas(document.getElementById('results-container')).then(function(canvas) {
+                const link = document.createElement('a');
+                link.download = 'gen48-results.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            });
         }
 
         function restartGame() {
